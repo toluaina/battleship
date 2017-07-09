@@ -13,11 +13,12 @@ Running the unot tests
 
 
 # Project Map
-├── battleship
-       ├── board.py
-       ├── README.txt
-       └── orientation.py
-       └── ship.py
-       └── position.py
-       └── rotation.py
-       └── tests.py
+    ├── battleship
+           ├── board.py
+           ├── README.txt
+           └── orientation.py
+           └── ship.py
+           └── position.py
+           └── rotation.py
+           └── tests.py
+
