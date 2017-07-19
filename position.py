@@ -14,10 +14,10 @@ class Position():
         self.y = y
 
     def __str__(self):
-        return 'x = %d; y = %d' % (self.x, self.y)
+        return '%d:%d' % (self.x, self.y)
 
     def __repr__(self):
-        return 'x = %d; y = %d' % (self.x, self.y)
+        return self.__str__()
 
     def __eq__(self, other):
         if isinstance(other, Position):
@@ -39,10 +39,10 @@ class Position():
         :rtype: `class::position.Position`
         '''
         if orientation == Orientation.east:
-            return Position(self.x + 1, self.y)
+            return Position(self.x , self.y + 1)
         elif orientation == Orientation.west:
-            return Position(self.x - 1, self.y)
+            return Position(self.x , self.y - 1)
         elif orientation == Orientation.north:
-            return Position(self.x, self.y + 1)
+            return Position(self.x + 1, self.y)
         elif orientation == Orientation.south:
-            return Position(self.x, self.y - 1)
+            return Position(self.x - 1, self.y)

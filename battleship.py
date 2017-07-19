@@ -8,7 +8,7 @@ from rotation import Rotation
 from position import Position
 from orientation import Orientation
 
-if __name__ == '__main__':
+def main():
 
     print ('Battleship')
 
@@ -34,6 +34,8 @@ if __name__ == '__main__':
                     'W': Orientation.west,
                     'N': Orientation.north,
                     'S': Orientation.south}
+    
+    board = None
 
     for i, line in enumerate(data):
 
@@ -42,6 +44,8 @@ if __name__ == '__main__':
             # first line is the grid size
             try:
                 size = int(line)
+                # setup the board dimensions
+                board = Board(size)
             except TypeError:
                 raise
 
@@ -57,7 +61,7 @@ if __name__ == '__main__':
                 # print ('x = %s; y = %d; orientation = %s' % (x, y, orientation))
                 position = Position(x, y)
                 ship = Ship(string.ascii_uppercase[len(ships) % 26], position,
-                            orientations[orientation])
+                            orientations[orientation], board)
                 ships[position] = ship
 
         else:
@@ -80,28 +84,29 @@ if __name__ == '__main__':
                 # this is a fire event
                 actions.append(('F', position))
 
+    
+    
     print ('Grid   : %d' % size)
     print ('Ships  : %s' % ships)
     print ('Actions: %s' % actions)
 
-    # setup the board and add the ships
-    board = Board(size, ships.values())
-
     # show the initial state of the board
     board.show_grid()
-
+    
     # execute the actions
-    for key, value in actions:
-        if key == 'M':
-             board.move(value)
-        if key == 'L':
-            value.rotate(Rotation.left)
-        if key == 'R':
-            value.rotate(Rotation.right)
-        if key == 'F':
-            board.fire(value)
+    for action, ship in actions:
+        if action == 'M':
+             ship.move()
+        if action == 'L':
+            ship.rotate(Rotation.left)
+        if action == 'R':
+            ship.rotate(Rotation.right)
+        #if action == 'F':
+        #    ship.fire(value)
 
     print ('-' * 80)
+    board.show_grid()
+    return
 
     # show the final state of the board
     board.show_grid()
@@ -115,3 +120,6 @@ if __name__ == '__main__':
                                           str(ship.orientation)[0].upper(),
                                           sunk))
 
+
+if __name__ == '__main__':
+    main()
