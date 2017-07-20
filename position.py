@@ -39,10 +39,10 @@ class Position():
         :rtype: `class::position.Position`
         '''
         if orientation == Orientation.east:
-            return Position(self.x , self.y + 1)
-        elif orientation == Orientation.west:
-            return Position(self.x , self.y - 1)
-        elif orientation == Orientation.north:
             return Position(self.x + 1, self.y)
-        elif orientation == Orientation.south:
+        elif orientation == Orientation.west:
             return Position(self.x - 1, self.y)
+        elif orientation == Orientation.north:
+            return Position(self.x, self.y + 1)
+        elif orientation == Orientation.south:
+            return Position(self.x, self.y - 1)

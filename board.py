@@ -25,25 +25,24 @@ class Board(object):
         :param position: position to test
         :type position: `class::position.Position`
         '''
-        x_offset = self._size - position.x - 1  # translate to bottom left
-        if (x_offset < 0 or x_offset >= self._size or position.y < 0 or
-            position.y >= self._size):
+        if (position.x < 0 or position.x > self._size-1 or
+            position.y < 0 or position.y > self._size-1):
             raise GridOutOfBoundError('Outofbounds for position %r ' % position)
 
     def remove(self, position):
-        ''' Removes a item from this position
+        ''' Removes ship from this position
  
-        :param position: position to remove item from
+        :param position: position to remove ship from
         :type position: `class::position.Position`
         '''
-        item = self.get(position)
-        if item is not None:
+        ship = self.get(position)
+        if ship is not None:
             self.set(None, position)
-            print '[Removed: %r from %r]' % (item, position)
+            print ('[Removed: %r from %r]' % (ship, position))
 
     def get(self, position):
         '''
-        Gets item at position on the grid.
+        Gets ship at position on the grid.
          
         self._grid[0][0]                     # Top Left
         self._grid[0][self.size-1]           # Top Right
@@ -53,10 +52,10 @@ class Board(object):
         :param position: position
         :type position: `class::position.Position`
         '''
-        x_offset = self._size - position.x - 1
-        return self._grid[x_offset][position.y]
+        # translate to bottom left
+        return self._grid[self._size-position.y-1][position.x]
 
-    def set(self, item, position):
+    def set(self, ship, position):
         '''
         Move a ship to a position on the grid.
          
@@ -70,8 +69,8 @@ class Board(object):
         :param position: position to move to
         :type position: `class::position.Position`
         '''
-        x_offset = self._size - position.x - 1  # translate to bottom left
-        self._grid[x_offset][position.y] = item
+        # translate to bottom left
+        self._grid[self._size-position.y-1][position.x] = ship
 
     def can_move(self, position):
         '''        
@@ -84,20 +83,19 @@ class Board(object):
         if self.get(position) is not None:
             raise ItemInPositionError('Cannot move to pos: %r' % position)
 
-    def move(self, ship, new_position, old_position=None):
+    def move(self, ship, position):
         '''
-        Moves a ship by one grid position if possible
-        
-       :param ship: ship to move
+        Moves a ship by one grid position
+
+        :param ship: ship to move
         :type ship: `class::ship.Ship`
-         :param new_position: new position 
-        :type new_position: `class::position.position`
-        :param old_position: old position 
-        :type old_position: `class::position.position`
+        :param position: new position to move to
+        :type position: `class::position.position`
         '''
-        self.can_move(new_position)
-        self.set(ship, new_position)
-        if old_position:
+        self.can_move(position)
+        old_position = ship.position
+        self.set(ship, position)
+        if old_position != position:
             self.remove(old_position)
 
     def fire(self, position):
@@ -108,11 +106,12 @@ class Board(object):
         :param position: position of the target object 
         :type position: `class::position.position`
         '''
-        target = self.get(position)
-        if not target is None:
+        self.within_bounds(position)
+        ship = self.get(position)
+        if ship is not None:
             self.remove(position)
-            target.sunk = True
-            print ('[Destroyed %r at position %r]' % (target, position))
+            ship.sunk = True
+            print ('[Destroyed %r at position %r]' % (ship, position))
 
     def show_grid(self):
         ''' show the state of the grid

@@ -34,7 +34,7 @@ def main():
                     'W': Orientation.west,
                     'N': Orientation.north,
                     'S': Orientation.south}
-    
+
     board = None
 
     for i, line in enumerate(data):
@@ -84,15 +84,15 @@ def main():
                 # this is a fire event
                 actions.append(('F', position))
 
-    
-    
+
+
     print ('Grid   : %d' % size)
     print ('Ships  : %s' % ships)
     print ('Actions: %s' % actions)
 
     # show the initial state of the board
     board.show_grid()
-    
+
     # execute the actions
     for action, ship in actions:
         if action == 'M':
@@ -101,12 +101,10 @@ def main():
             ship.rotate(Rotation.left)
         if action == 'R':
             ship.rotate(Rotation.right)
-        #if action == 'F':
-        #    ship.fire(value)
+        if action == 'F':
+            ships.itervalues().next().fire(ship)
 
-    print ('-' * 80)
     board.show_grid()
-    return
 
     # show the final state of the board
     board.show_grid()

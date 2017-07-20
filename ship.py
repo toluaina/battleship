@@ -2,6 +2,16 @@ from error import SunkShipError
 from error import MissileDepletedError
 from rotation import getOrientation
 
+
+def sunken(f, *args, **kwargs):
+    def wrapper(*args):
+        if args[0].sunk:
+            raise SunkShipError('Cannot %s a sunken ship %r' %
+                                (f.func_name, args[0]))
+        return f(*args, **kwargs)
+    return wrapper
+
+
 class Ship():
     ''' Ship class representation
     '''
@@ -29,10 +39,7 @@ class Ship():
     def __ne__(self, other):
         return not self.__eq__(other)
 
-    def sunken(self, action):
-        if self.sunk:
-            raise SunkShipError('Cannot %s a sunk ship %r' % (action, self))
-
+    @sunken
     def move(self):
         ''' 
         Advance ship by one grid step depending on orientation
@@ -41,25 +48,24 @@ class Ship():
         :returns: True or False depending on whether the move was successful
         :rtype: `bool`
         '''
-        self.sunken('move')
-        new_position = self.position.getPosition(self.orientation)
-        self._board.move(self, new_position, self.position)
-        self.position = new_position
+        position = self.position.getPosition(self.orientation)
+        self._board.move(self, position)
+        self.position = position
 
+    @sunken
     def rotate(self, rotation):
         '''
         Rotate the ship to the left or right
         No action if ship has sunk
         '''
-        self.sunken('move')
         self.orientation = getOrientation(rotation, self.orientation)
 
+    @sunken
     def fire(self, position):
         '''
         Fire the ship's anti-ship missile
         No action if ship has sunk
         '''
-        self.sunken('move')
         if self.missiles < 0:
             raise MissileDepletedError('Missiles depleted')
         # decrement missile counter
@@ -73,3 +79,5 @@ class Ship():
     @sunk.setter
     def sunk(self, value):
         self._sunk = value
+
+
